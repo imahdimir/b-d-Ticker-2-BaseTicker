@@ -78,7 +78,9 @@ def main() :
   ##
   btics.rmdir()
   ##
-  tic2btic.rmdir()  ##
+  tic2btic.rmdir()
+
+  ##
 
 ##
 
