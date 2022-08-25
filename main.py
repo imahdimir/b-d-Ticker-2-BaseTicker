@@ -17,7 +17,6 @@ map_repo_url = 'https://github.com/imahdimir/d-Ticker-2-BaseTicker-map'
 btic = 'BaseTicker'
 tick = 'Ticker'
 
-
 ptrns = {
     0    : lambda x : x ,
     1    : lambda x : f'{x}1' ,
@@ -32,16 +31,15 @@ ptrns = {
     }
 
 def main() :
-
-
   pass
 
   ##
+
   btics = GithubData(btic_repo_url)
-  btics.clone_overwrite_last_version()
+  btics.clone()
   ##
-  bdfpn = btics.data_fps[0]
-  bdf = pd.read_parquet(bdfpn)
+  bdfpn = btics.data_filepath
+  bdf = pd.read_excel(bdfpn)
 
   bdf = bdf.reset_index()
   bdf = bdf[[btic]]
@@ -49,34 +47,35 @@ def main() :
   odf = pd.DataFrame()
 
   for _ , vl in ptrns.items() :
-    bdf[tick] = bdf[btic].apply(vl)
-    odf = pd.concat([odf , bdf])
+    _df = bdf.copy()
+    _df[tick] = _df[btic].apply(vl)
 
+    odf = pd.concat([odf , _df])
+
+  ##
+  odf = odf[[tick , btic]]
   ##
   odf = odf.sort_values([btic , tick])
   ##
-
-  tic2btic = GithubData(map_repo_url)
-  tic2btic.clone_overwrite_last_version()
-  ##
-  ofp = tic2btic.data_fps[0]
-  pre_odf = pd.read_parquet(ofp)
-
-  pre_odf = pre_odf.reset_index()
-  pre_odf = pre_odf[[tick, btic]]
-  ##
-  odf = pd.concat([odf , pre_odf])
-  ##
   odf = odf.drop_duplicates()
   ##
-  odf = odf[[tick, btic]]
+  msk = odf.duplicated(subset = tick , keep = False)
+  df1 = odf[msk]
+  ##
+  odf = odf[~ msk]
+  ##
+
+  tic2btic = GithubData(map_repo_url)
+  tic2btic.clone()
+  ##
+  ofp = tic2btic.data_filepath
   ##
   odf = odf.set_index(tick)
   ##
   odf.to_parquet(ofp)
   ##
-  commit_msg = 'add by repo: https://github.com/imahdimir/build-Tickers-fr-BaseTickers-by-ptrn'
-  tic2btic.commit_and_push_to_github_data_target(commit_msg)
+  commit_msg = 'fixed tickers that maps 2 baseticker , بورس3 , کالا1'
+  tic2btic.commit_push(commit_msg)
   ##
 
   btics.rmdir()
@@ -84,18 +83,5 @@ def main() :
 
   ##
 
-##
-
-
-if __name__ == "__main__" :
-  main()
-
-# noinspection PyUnreachableCode
-if False :
-  pass
-
-  ##
-
-  ##
 
 ##
