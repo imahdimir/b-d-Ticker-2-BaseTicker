@@ -19,12 +19,10 @@ tick = 'Ticker'
 
 ptrns = {
     0    : lambda x : x ,
-    1    : lambda x : f'{x}1' ,
     2    : lambda x : f'{x}2' ,
     3    : lambda x : f'{x}3' ,
     4    : lambda x : f'{x}4' ,
     'h'  : lambda x : f'{x}ح' ,
-    'h1' : lambda x : f'{x}ح' + '1' ,
     'h2' : lambda x : f'{x}ح' + '2' ,
     'h3' : lambda x : f'{x}ح' + '3' ,
     'h4' : lambda x : f'{x}ح' + '4' ,
